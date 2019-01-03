@@ -24,9 +24,6 @@ from sklearn.metrics import accuracy_score
 # read data file
 df = pd.read_csv(filename,delimiter=',',encoding='utf-8')
 
-# clean out the HTML for twitter source variable
-df.source.replace("<.+?>","", regex=True, inplace=True)
-
 # some info about the dataset, in particular column names
 print(df.info())
 
@@ -34,7 +31,11 @@ print(df.info())
 X = df[col_text]				# text column
 Y = df[col_label]				# label column
 
-le = LabelEncoder()				# transforms categories into numbers
+# clean out the HTML for twitter source variable
+Y.replace("<.+?>","", regex=True, inplace=True)
+
+# transform categories into numbers
+le = LabelEncoder()				
 Y = le.fit_transform(Y)
 
 # cutting the dataset into training (85%) and testing (15%) data 

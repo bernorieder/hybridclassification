@@ -1,4 +1,4 @@
-# working with:
+# built from:
 # https://machinelearningmastery.com/multi-class-classification-tutorial-keras-deep-learning-library/
 # https://www.kaggle.com/kredy10/simple-lstm-for-text-classification
 # https://realpython.com/python-keras-text-classification/
@@ -29,7 +29,7 @@ from keras.callbacks import EarlyStopping
 df = pd.read_csv(filename,delimiter=',',encoding='utf-8')
 
 # clean out the HTML for twitter source variable
-df.source.replace("<.+?>","", regex=True, inplace=True)
+df[col_label].replace("<.+?>","", regex=True, inplace=True)
 
 # some info about the dataset, in particular column names
 print(df.info())
@@ -37,7 +37,6 @@ print(df.info())
 # vlaue stats of the source column
 print(df.source.value_counts())
 no_categories = len(df.source.value_counts())
-
 
 # data selection and basic transformations
 X = df[col_text]				# text column
