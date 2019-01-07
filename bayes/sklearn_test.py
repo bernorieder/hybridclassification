@@ -55,7 +55,7 @@ X_test_tfidf = tfidf_transformer.transform(X_test_counts)
 
 # train the classifier (select either multinominar naive Bayes or Support Vector Machine)
 clf = MultinomialNB()
-clf = SGDClassifier(loss='hinge',penalty='l2',alpha=1e-3,random_state=42,max_iter=20,tol=None)
+# clf = SGDClassifier(loss='hinge',penalty='l2',alpha=1e-3,random_state=42,max_iter=20,tol=None)
 
 # train the model (use X_train_counts for unweighted and X_train_tfidf for tfidf)
 clf.fit(X_train_counts,Y_train)
@@ -64,8 +64,12 @@ clf.fit(X_train_counts,Y_train)
 predicted = clf.predict(X_test_counts)
 
 # create output to get an idea
+counter = 0
 for doc, category in zip(X_test, predicted):
-	print('%r => %s' % (doc, le.classes_[category]))
+	print('\n%r => %s' % (doc, le.classes_[category]))
+	counter += 1
+	if(counter > 5):
+		break;
 
 # calculate and print accuracy score
 print('\naccuracy score: %r' % accuracy_score(Y_test,predicted))
