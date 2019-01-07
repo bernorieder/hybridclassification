@@ -79,6 +79,8 @@ n=10
 feature_names = count_vect.get_feature_names()
 
 print('\nmost informative features (high to low):\n')
+
+# two paths needed since binary and multiclass result structures are quite different
 if len(le.classes_) == 2:
 	out = "\t"
 	for label in le.classes_:
