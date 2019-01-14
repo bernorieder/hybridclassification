@@ -4,12 +4,12 @@
 
 # ----------
 
-filename_train = '../tcat_trump_full.csv'
-col_train_text = 'text'
-col_train_label = 'source'
+filename_train = '../tcat_trump_full.csv'					# file to use for training
+col_train_text = 'text'										# name of the text column
+col_train_label = 'source'									# name of the label column
 
-filename_infer = '../tcat_trump_full.csv'
-col_infer_text = 'text'
+filename_infer = '../tcat_trump_full.csv'					# file to label
+col_infer_text = 'text'										# name of the text column
 
 # ----------
 
@@ -17,8 +17,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import CountVectorizer,TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import accuracy_score
@@ -38,21 +37,21 @@ Y.replace("<.+?>","", regex=True, inplace=True)
 le = LabelEncoder()				
 Y = le.fit_transform(Y)
 
-# objects for the vectorizer and the frequency transformer
-count_vect = CountVectorizer(stop_words='english')
-tfidf_transformer = TfidfTransformer()
+# see: https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html
+# objects for the vectorizer and the frequency transformer (select one):
+# count_vect = CountVectorizer(stop_words='english')									# 1-gram vectorizer
+count_vect = CountVectorizer(ngram_range=(1, 2),min_df=2,stop_words='english')			# 1- and 2-gram vectorizer
+# count_vect = TfidfVectorizer(ngram_range=(1, 2),min_df=2,stop_words='english')		# 1- and 2-gram vectorizer with tf-idf transformation (depending on the data, this may work better or not)
 
 # vectorize and weigh training data 
 X_counts = count_vect.fit_transform(X)
-X_tfidf = tfidf_transformer.fit_transform(X_counts)
 
-# train the classifier (select either multinominar naive Bayes or Support Vector Machine)
-clf = MultinomialNB()
+# train the classifier (select either multinominar naive Bayes or Support Vector Machine):
+# clf = MultinomialNB()
 clf = SGDClassifier(loss='hinge',penalty='l2',alpha=1e-3,random_state=42,max_iter=20,tol=None)
 
 # train the model (use X_counts for unweighted and X_tfidf for tfidf)
 clf.fit(X_counts,Y)
-
 
 # read inference data file
 df = pd.read_csv(filename_infer,delimiter=',',encoding='utf-8')
@@ -62,9 +61,8 @@ X = df[col_infer_text]				# text column
 
 # vectorize and weigh training data 
 X_counts = count_vect.transform(X)
-X_tfidf = tfidf_transformer.transform(X_counts)
 
-# apply model to the test data (use X_counts for unweighted and X_tfidf for tfidf)
+# apply model to the test data
 predicted = clf.predict(X_counts)
 
 # create output to get an idea
