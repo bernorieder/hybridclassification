@@ -8,18 +8,18 @@ There are two sets of scripts:
 
 ## requirements
 
-The scripts require a Python 3 installation and a number of libraries that can be easily installed via pip:
-' $ pip install pandas
-	$ pip install numpy
-	$ pip install scikit-learn
+```
+$ pip install pandas
+$ pip install numpy
+$ pip install scikit-learn
+```
 
 To use the deep learning scripts you also need to install:
-	$ pip install tensorflow
-	$ pip install keras
-	$ pip install keras-text
+```
+$ pip install tensorflow
+$ pip install keras
+$ pip install keras-text
+```
 
+# use
 
-
-
-
-Two sets of examples for how to train ML classifiers on the basis of labeled CSV files.
