@@ -2,7 +2,7 @@
 # built from:
 # https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html
 
-# ----------
+# ---------- modify these lines to adapt to your data:
 
 filename_train = '../tcat_trump_full.csv'					# file to use for training
 col_train_text = 'text'										# name of the text column
@@ -10,6 +10,8 @@ col_train_label = 'source'									# name of the label column
 
 filename_infer = '../tcat_trump_full.csv'					# file to label
 col_infer_text = 'text'										# name of the text column
+
+type_classifier = 'svm'										# use 'bayes' for the multinominal Bayes classifier and 'svm' for support vector machine
 
 # ----------
 
@@ -27,8 +29,8 @@ from sklearn.metrics import accuracy_score
 df = pd.read_csv(filename_train,delimiter=',',encoding='utf-8')
 
 # data selection
-X = df[col_train_text]				# text column
-Y = df[col_train_label]				# label column
+X = df[col_train_text]							# text column
+Y = df[col_train_label].astype(str)				# label column
 
 # clean out the HTML for twitter source variable
 Y.replace("<.+?>","", regex=True, inplace=True)
@@ -46,9 +48,11 @@ count_vect = CountVectorizer(ngram_range=(1, 2),min_df=2,stop_words='english')		
 # vectorize and weigh training data 
 X_counts = count_vect.fit_transform(X)
 
-# train the classifier (select either multinominar naive Bayes or Support Vector Machine):
-# clf = MultinomialNB()
-clf = SGDClassifier(loss='hinge',penalty='l2',alpha=1e-3,random_state=42,max_iter=20,tol=None)
+# train the classifier
+if type_classifier == 'bayes':
+	clf = MultinomialNB()
+else:
+	clf = SGDClassifier(loss='hinge',penalty='l2',alpha=1e-3,random_state=42,max_iter=20,tol=None)
 
 # train the model (use X_counts for unweighted and X_tfidf for tfidf)
 clf.fit(X_counts,Y)
@@ -57,7 +61,7 @@ clf.fit(X_counts,Y)
 df = pd.read_csv(filename_infer,delimiter=',',encoding='utf-8')
 
 # data selection
-X = df[col_infer_text]				# text column
+X = df[col_infer_text].astype('U')				# text column
 
 # vectorize and weigh training data 
 X_counts = count_vect.transform(X)
@@ -71,7 +75,7 @@ for doc, category in zip(X, predicted):
 
 # adding a new column with category labels to the to the dataframe
 pred_classes = le.inverse_transform(predicted)
-df = df.assign(infclass=pred_classes)
+df = df.assign(inferred_label=pred_classes)
 
 # write an output from the extended dataframe
 df.to_csv('output.csv', sep=',', encoding='utf-8')
