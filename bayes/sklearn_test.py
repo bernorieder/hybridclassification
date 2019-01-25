@@ -7,7 +7,7 @@ filename = '../tcat_trump_full.csv'						# file to use for training and testing
 col_text = 'text'										# name of the text column
 col_label = 'source'									# name of the label column
 type_classifier = 'svm'									# use 'bayes' for the multinominal Bayes classifier and 'svm' for support vector machine
-use_tfidf = False										# whether to use tf*idf term weighting
+use_tfidf = False										# whether to use tf*idf term weighting (depending on the data, one or the other may work better)
 frequency_cutoff = 3									# minimum frequency for word (and bigrams) to take into account
 no_features = 10										# number of most important features to show
 

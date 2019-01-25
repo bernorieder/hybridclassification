@@ -12,7 +12,7 @@ filename_infer = '../tcat_trump_full.csv'				# file to label
 col_infer_text = 'text'									# name of the text column
 
 type_classifier = 'svm'									# use 'bayes' for the multinominal Bayes classifier and 'svm' for support vector machine
-use_tfidf = False										# whether to use tf*idf term weighting
+use_tfidf = False										# whether to use tf*idf term weighting (depending on the data, one or the other may work better)
 frequency_cutoff = 3									# minimum frequency for word (and bigrams) to take into account
 
 
@@ -47,7 +47,7 @@ Y = le.fit_transform(Y)
 if use_tfidf == False:
 	count_vect = CountVectorizer(ngram_range=(1,2),min_df=frequency_cutoff,stop_words='english')		# 1- and 2-gram vectorizer
 else:
-	count_vect = TfidfVectorizer(ngram_range=(1, 2),min_df=frequency_cutoff,stop_words='english')		# 1- and 2-gram vectorizer with tf-idf transformation (depending on the data, this may work better or not)
+	count_vect = TfidfVectorizer(ngram_range=(1, 2),min_df=frequency_cutoff,stop_words='english')		# 1- and 2-gram vectorizer with tf-idf transformation
 
 # vectorize and weigh training data 
 X_counts = count_vect.fit_transform(X)
