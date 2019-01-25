@@ -12,6 +12,7 @@ To use these scripts, you need two files:
 
 ## requirements
 
+These scripts require a working installation of Python 3 and a number of libraries that can be easily installed via pip:
 ```
 $ pip install pandas
 $ pip install numpy
@@ -27,7 +28,7 @@ $ pip install keras-text
 
 ## use
 For the 'bayes' path:
-1. to test your labeling and the classifier, modify the variables in the header of 'sklearn_test.py' and run the script;
+1. to test your labeling and the classifier, modify the variables in the header of 'sklearn\_test.py' and run the script;
 2.  check the accuracy score and the most important features to get an idea of the quality of the classification;
-3. to apply the classifier to new data, modify the variables in the header of 'sklearn_apply.py' and run the script;
-4. a new file is created with a new column called 'inferred_label';
+3. to apply the classifier to new data, modify the variables in the header of 'sklearn\_apply.py' and run the script;
+4. a new file is created with a new column called 'inferred\_label';
