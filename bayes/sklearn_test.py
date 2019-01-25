@@ -1,13 +1,16 @@
 # built on the basis of:
 # https://scikit-learn.org/stable/tutorial/text_analytics/working_with_text_data.html
 
-# ---------- modify these lines to adapt to your data:
+# ---------- modify the following lines to adapt to your data
 
 filename = '../tcat_trump_full.csv'						# file to use for training and testing
 col_text = 'text'										# name of the text column
 col_label = 'source'									# name of the label column
-no_features = 10										# number of most important features to show
 type_classifier = 'svm'									# use 'bayes' for the multinominal Bayes classifier and 'svm' for support vector machine
+use_tfidf = False										# whether to use tf*idf term weighting
+frequency_cutoff = 3									# minimum frequency for word (and bigrams) to take into account
+no_features = 10										# number of most important features to show
+
 
 
 # ---------- only modify what follows if you are confident
@@ -26,7 +29,7 @@ from sklearn.metrics import accuracy_score
 df = pd.read_csv(filename,delimiter=',',encoding='utf-8')
 
 # some info about the dataset, in particular column names
-print(df.info())
+print(df.info(),'\n\n---')
 
 # data selection
 X = df[col_text].astype('U')			# text column
@@ -43,11 +46,10 @@ Y = le.fit_transform(Y)
 X_train,X_test,Y_train,Y_test = train_test_split(X,Y,test_size=0.15)
 
 # see: https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html
-# objects for the vectorizer and the frequency transformer (select one):
-# count_vect = CountVectorizer(stop_words='english')									# 1-gram vectorizer
-count_vect = CountVectorizer(ngram_range=(1,2),min_df=2,stop_words='english')			# 1- and 2-gram vectorizer
-# count_vect = TfidfVectorizer(ngram_range=(1, 2),min_df=2,stop_words='english')		# 1- and 2-gram vectorizer with tf-idf transformation (depending on the data, this may work better or not)
-
+if use_tfidf == False:
+	count_vect = CountVectorizer(ngram_range=(1,2),min_df=frequency_cutoff,stop_words='english')		# 1- and 2-gram vectorizer
+else:
+	count_vect = TfidfVectorizer(ngram_range=(1, 2),min_df=frequency_cutoff,stop_words='english')		# 1- and 2-gram vectorizer with tf-idf transformation (depending on the data, this may work better or not)
 
 # vectorize and weigh training data 
 X_train_counts = count_vect.fit_transform(X_train)
@@ -59,7 +61,7 @@ X_test_counts = count_vect.transform(X_test)
 if type_classifier == 'bayes':
 	clf = MultinomialNB()
 else:
-	clf = SGDClassifier(loss='hinge',penalty='l2',alpha=1e-3,random_state=42,max_iter=20,tol=None)
+	clf = SGDClassifier(loss='hinge',penalty='l2',alpha=1e-3,random_state=42,max_iter=50,tol=1e-3)
 
 # train the model
 clf.fit(X_train_counts,Y_train)
